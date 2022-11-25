@@ -156,7 +156,6 @@ class _LoginPageState extends State<LoginPage> {
           // saving the values to our shared preferences
           await HelperFunctions.saveUserLoggedInStatus(true);
           await HelperFunctions.saveUserEmailSF(email);
-          //TODO: handle exception to make the app work
           await HelperFunctions.saveUserNameSF(snapshot.docs[0]['fullName']);
           nextScreenReplace(context, const HomePage());
         } else {

@@ -1,4 +1,3 @@
-import 'package:chatapp_test1/pages/group_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
@@ -80,7 +79,7 @@ class DatabaseService {
 
   //search
   searchByName(String groupName) {
-    return groupCollection.where("groupName.", isEqualTo: groupName).get();
+    return groupCollection.where("groupName", isEqualTo: groupName).get();
   }
 
   //function --> bool, take user value and check whether that user is available in the group
@@ -95,5 +94,42 @@ class DatabaseService {
     } else {
       return false;
     }
+  }
+
+  //toggling the group join or exit
+  Future toggleGroupJoin(
+      String groupId, String userName, String groupName) async {
+    DocumentReference userDocumentReference = userCollection.doc(uid);
+    DocumentReference groupDocumentReference = groupCollection.doc(groupId);
+
+    DocumentSnapshot documentSnapshot = await userDocumentReference.get();
+    List<dynamic> groups = await documentSnapshot['groups'];
+
+    //if user has a group, then remove them or also in other part rejoin them
+    if (groups.contains("${groupId}_$groupName")) {
+      await userDocumentReference.update({
+        "groups": FieldValue.arrayRemove(["${groupId}_$groupName"])
+      });
+      await groupDocumentReference.update({
+        "members": FieldValue.arrayRemove(["${uid}_$userName"])
+      });
+    } else {
+      await userDocumentReference.update({
+        "groups": FieldValue.arrayUnion(["${groupId}_$groupName"])
+      });
+      await groupDocumentReference.update({
+        "members": FieldValue.arrayUnion(["${uid}_$userName"])
+      });
+    }
+  }
+
+  //send message
+  sendMessage(String groupId, Map<String, dynamic> chatMessageData) async {
+    groupCollection.doc(groupId).collection("messages").add(chatMessageData);
+    groupCollection.doc(groupId).update({
+      "recentMessage": chatMessageData['message'],
+      "recentMessageSender": chatMessageData['sender'],
+      "recentMessageTime": chatMessageData['time'].toString(),
+    });
   }
 }
