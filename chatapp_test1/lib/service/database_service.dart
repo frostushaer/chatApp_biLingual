@@ -15,7 +15,7 @@ class DatabaseService {
   Future savingUserData(String fullName, String email) async {
     return await userCollection.doc(uid).set({
       "fullName": fullName,
-      "email": email,
+      "enmail": email,
       "groups": [],
       "profilePic": "",
       "uid": uid,
