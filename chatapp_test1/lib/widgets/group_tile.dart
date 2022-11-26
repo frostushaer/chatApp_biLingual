@@ -2,6 +2,8 @@ import 'package:chatapp_test1/pages/chat_page.dart';
 import 'package:chatapp_test1/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
+
 class GroupTile extends StatefulWidget {
   final String userName;
   final String groupId;
@@ -48,7 +50,7 @@ class _GroupTileState extends State<GroupTile> {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-            "Join the conversation as ${widget.userName}",
+            S.of(context).groupTileSubTitle + "${widget.userName}",
             style: const TextStyle(fontSize: 13),
           ),
         ),

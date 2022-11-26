@@ -1,3 +1,4 @@
+import 'package:chatapp_test1/LanguageChangeProvider.dart';
 import 'package:chatapp_test1/helper/helper_function.dart';
 import 'package:chatapp_test1/pages/auth/login_page.dart';
 import 'package:chatapp_test1/pages/home_page.dart';
@@ -5,6 +6,10 @@ import 'package:chatapp_test1/shared/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+
+import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,12 +60,26 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          primaryColor: Constants().primaryColor,
-          scaffoldBackgroundColor: Colors.white),
-      debugShowCheckedModeBanner: false,
-      home: _isSignedIn ? const HomePage() : const LoginPage(),
+    return ChangeNotifierProvider<LanguageChangeProvider> (
+      create: (context) => LanguageChangeProvider(),
+      child: Builder(
+        builder: (context) =>
+        MaterialApp(
+          locale: Provider.of<LanguageChangeProvider>(context, listen: true).currentLocale,
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: ThemeData(
+              primaryColor: Constants().primaryColor,
+              scaffoldBackgroundColor: Colors.white),
+          debugShowCheckedModeBanner: false,
+          home: _isSignedIn ? const HomePage() : const LoginPage(),
+        ),
+      ),
     );
   }
 }

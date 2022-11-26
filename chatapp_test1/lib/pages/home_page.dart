@@ -1,3 +1,4 @@
+import 'package:chatapp_test1/generated/l10n.dart';
 import 'package:chatapp_test1/helper/helper_function.dart';
 import 'package:chatapp_test1/pages/auth/login_page.dart';
 import 'package:chatapp_test1/pages/profile_page.dart';
@@ -8,6 +9,8 @@ import 'package:chatapp_test1/widgets/group_tile.dart';
 import 'package:chatapp_test1/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../LanguageChangeProvider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,6 +32,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     gettingUserData();
   }
+
+  final List locale = [
+    {'name': 'ENGLISH', 'locale': const Locale('en')},
+    {'name': 'हिन्दी', 'locale': const Locale('hi')},
+  ];
 
   //string manipulation
   String getId(String res) {
@@ -74,9 +82,9 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text(
-          "Groups",
-          style: TextStyle(
+        title: Text(
+          S.of(context).groups,
+          style: const TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 27),
         ),
       ),
@@ -110,9 +118,9 @@ class _HomePageState extends State<HomePage> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               leading: const Icon(Icons.group),
-              title: const Text(
-                "Groups",
-                style: TextStyle(color: Colors.black),
+              title: Text(
+                S.of(context).groups,
+                style: const TextStyle(color: Colors.black),
               ),
             ),
             ListTile(
@@ -126,9 +134,9 @@ class _HomePageState extends State<HomePage> {
               },
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: const Icon(Icons.group),
-              title: const Text(
-                "Profile",
+              leading: const Icon(Icons.person),
+              title: Text(
+                S.of(context).profile,
                 style: TextStyle(color: Colors.black),
               ),
             ),
@@ -139,8 +147,8 @@ class _HomePageState extends State<HomePage> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text("Logout"),
-                        content: const Text("Are you sure to Logout?"),
+                        title: Text(S.of(context).logout),
+                        content: Text(S.of(context).reallyLogout),
                         actions: [
                           IconButton(
                             onPressed: () {
@@ -171,11 +179,59 @@ class _HomePageState extends State<HomePage> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               leading: const Icon(Icons.exit_to_app),
-              title: const Text(
-                "Logout",
+              title: Text(
+                S.of(context).logout,
                 style: TextStyle(color: Colors.black),
               ),
-            )
+            ),
+            ListTile(
+              onTap: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(S.of(context).chooseLanguage),
+                        content: Container(
+                          width: double.maxFinite,
+                          child: ListView.separated(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        // print(locale[index]['locale']);
+                                        context
+                                            .read<LanguageChangeProvider>()
+                                            .changeLocale(locale[index]
+                                                    ['locale']
+                                                .toString());
+                                        nextScreenReplace(
+                                            context, const HomePage());
+                                        showSnackBar(context, Colors.green,
+                                            S.of(context).langChanged);
+                                      },
+                                      child: Text(locale[index]['name'])),
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return Divider(
+                                  color: Theme.of(context).primaryColor,
+                                );
+                              },
+                              itemCount: locale.length),
+                        ),
+                      );
+                    });
+              },
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              leading: const Icon(Icons.language),
+              title: Text(
+                S.of(context).language,
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
           ],
         ),
       ),
@@ -203,8 +259,8 @@ class _HomePageState extends State<HomePage> {
         builder: (context) {
           return StatefulBuilder(builder: ((context, setState) {
             return AlertDialog(
-              title: const Text(
-                "Create a group",
+              title: Text(
+                S.of(context).createAGroup,
                 textAlign: TextAlign.left,
               ),
               content: Column(
@@ -245,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).primaryColor),
-                  child: const Text("CANCLE"),
+                  child: Text(S.of(context).cancle),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -262,12 +318,12 @@ class _HomePageState extends State<HomePage> {
                       });
                       Navigator.of(context).pop();
                       showSnackBar(
-                          context, Colors.green, "Group Created Successfully.");
+                          context, Colors.green, S.of(context).groupCreated);
                     }
                   },
                   style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).primaryColor),
-                  child: const Text("CREATE"),
+                  child: Text(S.of(context).create),
                 )
               ],
             );
@@ -331,8 +387,8 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(
             height: 20,
           ),
-          const Text(
-            "You have not joined any group, tap on the add icon to create a group or also search from top search button",
+          Text(
+            S.of(context).createGroupDesc,
             textAlign: TextAlign.center,
           )
         ],

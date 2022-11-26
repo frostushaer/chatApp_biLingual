@@ -1,8 +1,11 @@
+import 'package:chatapp_test1/generated/l10n.dart';
 import 'package:chatapp_test1/pages/auth/login_page.dart';
 import 'package:chatapp_test1/pages/home_page.dart';
 import 'package:chatapp_test1/service/auth_service.dart';
 import 'package:chatapp_test1/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../LanguageChangeProvider.dart';
 
 class ProfilePage extends StatefulWidget {
   String userName;
@@ -16,15 +19,23 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   AuthService authService = AuthService();
+
+  final List locale = [
+    {'name': 'ENGLISH', 'locale': const Locale('en')},
+    {'name': 'हिन्दी', 'locale': const Locale('hi')},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
-        title: const Text(
-          "Profile",
-          style: TextStyle(
+        centerTitle: true,
+        title: Text(
+          S.of(context).profile,
+          style: const TextStyle(
               color: Colors.white, fontSize: 27, fontWeight: FontWeight.bold),
         ),
       ),
@@ -58,9 +69,9 @@ class _ProfilePageState extends State<ProfilePage> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               leading: const Icon(Icons.group),
-              title: const Text(
-                "Groups",
-                style: TextStyle(color: Colors.black),
+              title: Text(
+                S.of(context).groups,
+                style: const TextStyle(color: Colors.black),
               ),
             ),
             ListTile(
@@ -70,9 +81,9 @@ class _ProfilePageState extends State<ProfilePage> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               leading: const Icon(Icons.group),
-              title: const Text(
-                "Profile",
-                style: TextStyle(color: Colors.black),
+              title: Text(
+                S.of(context).profile,
+                style: const TextStyle(color: Colors.black),
               ),
             ),
             ListTile(
@@ -82,8 +93,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text("Logout"),
-                        content: const Text("Are you sure to Logout?"),
+                        title: Text(S.of(context).logout),
+                        content: Text(S.of(context).reallyLogout),
                         actions: [
                           IconButton(
                             onPressed: () {
@@ -114,11 +125,59 @@ class _ProfilePageState extends State<ProfilePage> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               leading: const Icon(Icons.exit_to_app),
-              title: const Text(
-                "Logout",
+              title: Text(
+                S.of(context).logout,
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
+            ListTile(
+              onTap: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(S.of(context).chooseLanguage),
+                        content: Container(
+                          width: double.maxFinite,
+                          child: ListView.separated(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        // print(locale[index]['locale']);
+                                        context
+                                            .read<LanguageChangeProvider>()
+                                            .changeLocale(locale[index]
+                                                    ['locale']
+                                                .toString());
+                                        nextScreenReplace(
+                                            context, const HomePage());
+                                        showSnackBar(context, Colors.green,
+                                            S.of(context).langChanged);
+                                      },
+                                      child: Text(locale[index]['name'])),
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return Divider(
+                                  color: Theme.of(context).primaryColor,
+                                );
+                              },
+                              itemCount: locale.length),
+                        ),
+                      );
+                    });
+              },
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              leading: const Icon(Icons.language),
+              title: Text(
+                S.of(context).language,
                 style: TextStyle(color: Colors.black),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -139,7 +198,8 @@ class _ProfilePageState extends State<ProfilePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Full Name", style: TextStyle(fontSize: 17)),
+                Text(S.of(context).fullName,
+                    style: const TextStyle(fontSize: 17)),
                 Text(widget.userName, style: const TextStyle(fontSize: 17)),
               ],
             ),
@@ -149,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Email", style: TextStyle(fontSize: 17)),
+                Text(S.of(context).Email, style: const TextStyle(fontSize: 17)),
                 Text(widget.email, style: const TextStyle(fontSize: 17)),
               ],
             ),

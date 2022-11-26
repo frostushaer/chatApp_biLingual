@@ -4,6 +4,8 @@ import 'package:chatapp_test1/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
+
 class GroupInfo extends StatefulWidget {
   final String groupId;
   final String groupName;
@@ -55,7 +57,7 @@ class _GroupInfoState extends State<GroupInfo> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text("Group Info"),
+        title:  Text(S.of(context).groupInfo),
         actions: [
           IconButton(
               onPressed: () {
@@ -64,8 +66,8 @@ class _GroupInfoState extends State<GroupInfo> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text("Exit"),
-                        content: const Text("Are you sure to Exit the group?"),
+                        title: Text(S.of(context).exit),
+                        content: Text(S.of(context).exitText),
                         actions: [
                           IconButton(
                             onPressed: () {

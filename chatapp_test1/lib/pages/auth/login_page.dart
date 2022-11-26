@@ -1,3 +1,4 @@
+import 'package:chatapp_test1/LanguageChangeProvider.dart';
 import 'package:chatapp_test1/helper/helper_function.dart';
 import 'package:chatapp_test1/pages/auth/register_page.dart';
 import 'package:chatapp_test1/pages/home_page.dart';
@@ -8,6 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../generated/l10n.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -22,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   String password = "";
   bool _isLoading = false;
   AuthService authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,19 +45,19 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        const Text(
-                          "Groupie",
+                        Text(
+                          S.of(context).appTitle,
                           style: TextStyle(
                               fontSize: 40, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
-                        const Text("Login now to see what they are talking!",
+                        Text(S.of(context).loginSlogan,
                             style: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w400)),
                         Image.asset("assets/login.png"),
                         TextFormField(
                           decoration: TextInputDecoration.copyWith(
-                              labelText: "Email",
+                              labelText: S.of(context).Email,
                               prefixIcon: Icon(
                                 Icons.email,
                                 color: Theme.of(context).primaryColor,
@@ -69,21 +74,21 @@ class _LoginPageState extends State<LoginPage> {
                                         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                     .hasMatch(val!)
                                 ? null
-                                : "Please enter a valid email";
+                                : S.of(context).EmailValidation;
                           },
                         ),
                         const SizedBox(height: 15),
                         TextFormField(
                           obscureText: true,
                           decoration: TextInputDecoration.copyWith(
-                              labelText: "Password",
+                              labelText: S.of(context).Password,
                               prefixIcon: Icon(
                                 Icons.lock,
                                 color: Theme.of(context).primaryColor,
                               )),
                           validator: (val) {
                             if (val!.length < 6) {
-                              return "Password must be at least 6 characters";
+                              return S.of(context).PasswordValidation;
                             } else {
                               return null;
                             }
@@ -105,8 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
-                            child: const Text(
-                              "Sign In",
+                            child: Text(
+                              S.of(context).SignIn,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             ),
@@ -119,12 +124,12 @@ class _LoginPageState extends State<LoginPage> {
                           height: 10,
                         ),
                         Text.rich(TextSpan(
-                          text: "Don't have an account? ",
+                          text: S.of(context).DontHaveAccount,
                           style: const TextStyle(
                               color: Colors.black, fontSize: 14),
                           children: <TextSpan>[
                             TextSpan(
-                                text: "Register here",
+                                text: S.of(context).RegisterHere,
                                 style: const TextStyle(
                                     color: Colors.black,
                                     decoration: TextDecoration.underline),
