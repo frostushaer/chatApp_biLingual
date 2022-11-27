@@ -60,12 +60,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<LanguageChangeProvider> (
+    return ChangeNotifierProvider<LanguageChangeProvider>(
       create: (context) => LanguageChangeProvider(),
       child: Builder(
-        builder: (context) =>
-        MaterialApp(
-          locale: Provider.of<LanguageChangeProvider>(context, listen: true).currentLocale,
+        builder: (context) => MaterialApp(
+          locale: Provider.of<LanguageChangeProvider>(context, listen: true)
+              .currentLocale,
           localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,

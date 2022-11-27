@@ -27,6 +27,11 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   AuthService authService = AuthService();
 
+  final List locale = [
+    {'name': 'ENGLISH', 'locale': const Locale('en')},
+    {'name': 'हिन्दी', 'locale': const Locale('hi')},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,6 +141,86 @@ class _LoginPageState extends State<LoginPage> {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     nextScreen(context, const RegisterPage());
+                                  }),
+                          ],
+                        )),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Text.rich(TextSpan(
+                          // text: S.of(context).DontHaveAccount,
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 14),
+                          children: [
+                            const WidgetSpan(
+                              child: Icon(
+                                Icons.translate,
+                                size: 18,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: "  ",
+                            ),
+                            TextSpan(
+                                text: S.of(context).language,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    decoration: TextDecoration.underline),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                                S.of(context).chooseLanguage),
+                                            content: Container(
+                                              width: double.maxFinite,
+                                              child: ListView.separated(
+                                                  shrinkWrap: true,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: GestureDetector(
+                                                          onTap: () {
+                                                            // print(locale[index]['locale']);
+                                                            context
+                                                                .read<
+                                                                    LanguageChangeProvider>()
+                                                                .changeLocale(locale[
+                                                                            index]
+                                                                        [
+                                                                        'locale']
+                                                                    .toString());
+                                                            nextScreenReplace(
+                                                                context,
+                                                                const LoginPage());
+                                                            showSnackBar(
+                                                                context,
+                                                                Colors.green,
+                                                                S
+                                                                    .of(context)
+                                                                    .langChanged);
+                                                          },
+                                                          child: Text(
+                                                              locale[index]
+                                                                  ['name'])),
+                                                    );
+                                                  },
+                                                  separatorBuilder:
+                                                      (context, index) {
+                                                    return Divider(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    );
+                                                  },
+                                                  itemCount: locale.length),
+                                            ),
+                                          );
+                                        });
                                   }),
                           ],
                         )),
