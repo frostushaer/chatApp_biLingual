@@ -1,7 +1,6 @@
 import 'package:chatapp_test1/LanguageChangeProvider.dart';
 import 'package:chatapp_test1/helper/helper_function.dart';
 import 'package:chatapp_test1/pages/auth/login_page.dart';
-import 'package:chatapp_test1/pages/org_pages/course_page.dart';
 import 'package:chatapp_test1/pages/home_page.dart';
 import 'package:chatapp_test1/shared/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,12 +60,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<LanguageChangeProvider>(
+    return ChangeNotifierProvider<LanguageChangeProvider> (
       create: (context) => LanguageChangeProvider(),
       child: Builder(
-        builder: (context) => MaterialApp(
-          locale: Provider.of<LanguageChangeProvider>(context, listen: true)
-              .currentLocale,
+        builder: (context) =>
+        MaterialApp(
+          locale: Provider.of<LanguageChangeProvider>(context, listen: true).currentLocale,
           localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -78,8 +77,7 @@ class _MyAppState extends State<MyApp> {
               primaryColor: Constants().primaryColor,
               scaffoldBackgroundColor: Colors.white),
           debugShowCheckedModeBanner: false,
-          //redirect to home page
-          home: _isSignedIn ? const CoursePage() : const LoginPage(),
+          home: _isSignedIn ? const HomePage() : const LoginPage(),
         ),
       ),
     );
