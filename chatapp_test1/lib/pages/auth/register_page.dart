@@ -5,7 +5,6 @@ import 'package:chatapp_test1/service/auth_service.dart';
 import 'package:chatapp_test1/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import '../../generated/l10n.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -21,6 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String email = "";
   String password = "";
   String fullName = "";
+  String orgName = "";
   AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -45,8 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               fontSize: 40, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
-                        Text(
-                            S.of(context).registerSlogan,
+                        Text(S.of(context).registerSlogan,
                             style: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w400)),
                         Image.asset("assets/register.png"),
@@ -128,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
-                            child:  Text(
+                            child: Text(
                               S.of(context).register,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
@@ -179,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
           await HelperFunctions.saveUserNameSF(fullName);
           nextScreenReplace(context, const HomePage());
         } else {
-          showSnackBar(context, Colors.red, value);
+          showSnackBar(context, Color.fromARGB(255, 101, 167, 230), value);
           setState(() {
             _isLoading = false;
           });
