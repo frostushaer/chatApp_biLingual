@@ -45,7 +45,7 @@ class _StaffPageState extends State<StaffPage> {
 
   final List locale = [
     {'name': 'ENGLISH', 'locale': const Locale('en')},
-    {'name': 'हिन्दी', 'locale': const Locale('hi')},
+    {'name': 'ଓଡିଆ', 'locale': const Locale('hi')},
   ];
 
   //string manipulation

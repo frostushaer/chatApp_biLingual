@@ -39,7 +39,7 @@ class _CoursePageState extends State<CoursePage> {
 
   final List locale = [
     {'name': 'ENGLISH', 'locale': const Locale('en')},
-    {'name': 'हिन्दी', 'locale': const Locale('hi')},
+    {'name': 'ଓଡିଆ', 'locale': const Locale('hi')},
   ];
 
   //string manipulation
@@ -59,7 +59,7 @@ class _CoursePageState extends State<CoursePage> {
     });
     await HelperFunctions.getUserNameFromSF().then((val) {
       setState(() {
-        userName = val!;
+        orgName = val!;
       });
     });
     //getting the list of snapshot in our stream

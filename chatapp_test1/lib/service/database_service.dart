@@ -1,15 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-  final String? uid;
-  DatabaseService({this.uid});
+  final String? oid, uid, cid, sid;
+  DatabaseService({this.oid, this.uid, this.cid, this.sid});
 
   //reference for our collections
+  final CollectionReference orgCollection =
+      FirebaseFirestore.instance.collection("org");
+
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection("users");
 
   final CollectionReference groupCollection =
       FirebaseFirestore.instance.collection("groups");
+
+  final CollectionReference courseCollection =
+      FirebaseFirestore.instance.collection("course");
+
+  final CollectionReference staffCollection =
+      FirebaseFirestore.instance.collection("staffs");
 
   //saving the userdata
   Future savingUserData(String fullName, String email) async {
@@ -35,6 +44,59 @@ class DatabaseService {
   }
 
   //creating a course
+  //saving organization data
+  Future savingOrgData(String orgName, String email) async {
+    return await orgCollection.doc(oid).set({
+      "orgName": orgName,
+      "email": email,
+      "courses": [],
+      "staffs": [],
+      "profilePic": "",
+      "oid": oid,
+    });
+  }
+
+  //get organization data
+  Future gettingOrgData(String email) async {
+    QuerySnapshot snapshot =
+        await orgCollection.where("email", isEqualTo: email).get();
+    return snapshot;
+  }
+
+  //get organiation course
+  getOrgCourse() async {
+    return orgCollection.doc(oid).snapshots();
+  }
+
+  //get organiation staff
+  getOrgStaff() async {
+    return orgCollection.doc(oid).snapshots();
+  }
+
+  //saving the course
+  Future savingCourseData(
+      String courseName, String oid, String adminName) async {
+    return await courseCollection.doc(cid).set({
+      "courseName": courseName,
+      "adminName": adminName,
+      "batches": [],
+      "profilePic": "",
+      "cid": cid,
+      "oid": oid,
+    });
+  }
+
+  //getting user data
+  Future gettingCourseData(String courseName) async {
+    QuerySnapshot snapshot =
+        await courseCollection.where("courseName", isEqualTo: courseName).get();
+    return snapshot;
+  }
+
+  //get course batch
+  getCourseBatch() async {
+    return courseCollection.doc(cid).snapshots();
+  }
 
   //creating a group
   Future createGroup(String userName, String id, String groupName) async {

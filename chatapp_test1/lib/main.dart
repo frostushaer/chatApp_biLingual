@@ -41,11 +41,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isSignedIn = false;
+  bool _isOrg = false;
 
   @override
   void initState() {
     super.initState();
     getUserLoggedInStatus();
+    getUserType();
   }
 
   getUserLoggedInStatus() async {
@@ -54,6 +56,17 @@ class _MyAppState extends State<MyApp> {
         setState(() {
           //keep user if logged in
           _isSignedIn = value;
+        });
+      }
+    });
+  }
+
+  getUserType() async {
+    await HelperFunctions.getUserTypeStatus().then((value) {
+      if (value != null) {
+        setState(() {
+          //keep user if logged in
+          _isOrg = value;
         });
       }
     });
@@ -79,7 +92,9 @@ class _MyAppState extends State<MyApp> {
               scaffoldBackgroundColor: Colors.white),
           debugShowCheckedModeBanner: false,
           //redirect to home page
-          home: _isSignedIn ? const CoursePage() : const LoginPage(),
+          home: _isSignedIn
+              ? (_isOrg ? const CoursePage() : const HomePage())
+              : const LoginPage(),
         ),
       ),
     );

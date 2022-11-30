@@ -40,6 +40,25 @@ class AuthService {
     }
   }
 
+  //register function
+  Future registerOrgWithEmailandPassword(
+      String orgName, String email, String password) async {
+    try {
+      User user = (await firebaseAuth.createUserWithEmailAndPassword(
+              email: email, password: password))
+          .user!;
+
+      if (user != null) {
+        //call our database service to update the user data
+        await DatabaseService(oid: user.uid).savingOrgData(orgName, email);
+        return true;
+      }
+    } on FirebaseAuthException catch (e) {
+      // print(e);
+      return e.message;
+    }
+  }
+
   //signout function
   Future signOut() async {
     try {

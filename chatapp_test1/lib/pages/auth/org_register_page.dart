@@ -1,21 +1,22 @@
 import 'package:chatapp_test1/helper/helper_function.dart';
 import 'package:chatapp_test1/pages/auth/login_page.dart';
-import 'package:chatapp_test1/pages/auth/org_register_page.dart';
+import 'package:chatapp_test1/pages/auth/register_page.dart';
 import 'package:chatapp_test1/pages/home_page.dart';
+import 'package:chatapp_test1/pages/org_pages/course_page.dart';
 import 'package:chatapp_test1/service/auth_service.dart';
 import 'package:chatapp_test1/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../generated/l10n.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class OrgRegisterPage extends StatefulWidget {
+  const OrgRegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<OrgRegisterPage> createState() => _OrgRegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _OrgRegisterPageState extends State<OrgRegisterPage> {
   bool _isLoading = false;
   final formKey = GlobalKey<FormState>();
   String email = "";
@@ -52,14 +53,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         Image.asset("assets/register.png"),
                         TextFormField(
                           decoration: TextInputDecoration.copyWith(
-                              labelText: S.of(context).fullName,
+                              labelText: "Organization Name",
                               prefixIcon: Icon(
                                 Icons.person,
                                 color: Theme.of(context).primaryColor,
                               )),
                           onChanged: (val) {
                             setState(() {
-                              fullName = val;
+                              orgName = val;
                             });
                           },
                           validator: (val) {
@@ -75,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         TextFormField(
                           decoration: TextInputDecoration.copyWith(
-                              labelText: S.of(context).Email,
+                              labelText: "Organization email",
                               prefixIcon: Icon(
                                 Icons.email,
                                 color: Theme.of(context).primaryColor,
@@ -128,8 +129,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
-                            child: Text(
-                              S.of(context).register,
+                            child: const Text(
+                              "Register Organization",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             ),
@@ -138,26 +139,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             },
                           ),
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text.rich(TextSpan(
-                          text: "Register as Organization?  ",
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 14),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: "Organization Register",
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    decoration: TextDecoration.underline),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    nextScreen(
-                                        context, const OrgRegisterPage());
-                                  }),
-                          ],
-                        )),
                         const SizedBox(
                           height: 10,
                         ),
@@ -177,6 +158,25 @@ class _RegisterPageState extends State<RegisterPage> {
                                   }),
                           ],
                         )),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text.rich(TextSpan(
+                          text: "Register as User?  ",
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 14),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: "Register Here",
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    decoration: TextDecoration.underline),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    nextScreen(context, const RegisterPage());
+                                  }),
+                          ],
+                        )),
                       ],
                     )),
               ),
@@ -190,14 +190,15 @@ class _RegisterPageState extends State<RegisterPage> {
         _isLoading = true;
       });
       await authService
-          .registerUserWithEmailandPassword(fullName, email, password)
+          .registerOrgWithEmailandPassword(orgName, email, password)
           .then((value) async {
         if (value == true) {
           // saving the shared preference state
+          await HelperFunctions.saveUserType(true);
           await HelperFunctions.saveUserLoggedInStatus(true);
           await HelperFunctions.saveUserEmailSF(email);
-          await HelperFunctions.saveUserNameSF(fullName);
-          nextScreenReplace(context, const HomePage());
+          await HelperFunctions.saveUserNameSF(orgName);
+          nextScreenReplace(context, const CoursePage());
         } else {
           showSnackBar(context, Color.fromARGB(255, 101, 167, 230), value);
           setState(() {

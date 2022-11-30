@@ -1,8 +1,10 @@
 import 'package:chatapp_test1/LanguageChangeProvider.dart';
 import 'package:chatapp_test1/helper/helper_function.dart';
-import 'package:chatapp_test1/pages/auth/org_login_page.dart';
+import 'package:chatapp_test1/pages/auth/login_page.dart';
+import 'package:chatapp_test1/pages/auth/org_register_page.dart';
 import 'package:chatapp_test1/pages/auth/register_page.dart';
 import 'package:chatapp_test1/pages/home_page.dart';
+import 'package:chatapp_test1/pages/org_pages/course_page.dart';
 import 'package:chatapp_test1/service/auth_service.dart';
 import 'package:chatapp_test1/service/database_service.dart';
 import 'package:chatapp_test1/widgets/widgets.dart';
@@ -14,14 +16,14 @@ import 'package:provider/provider.dart';
 
 import '../../generated/l10n.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class OrgLoginPage extends StatefulWidget {
+  const OrgLoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<OrgLoginPage> createState() => _OrgLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _OrgLoginPageState extends State<OrgLoginPage> {
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
@@ -63,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                         Image.asset("assets/login.png"),
                         TextFormField(
                           decoration: TextInputDecoration.copyWith(
-                              labelText: S.of(context).Email,
+                              labelText: "Organization email",
                               prefixIcon: Icon(
                                 Icons.email,
                                 color: Theme.of(context).primaryColor,
@@ -116,8 +118,8 @@ class _LoginPageState extends State<LoginPage> {
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
-                            child: Text(
-                              S.of(context).SignIn,
+                            child: const Text(
+                              "Organization Signin",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             ),
@@ -126,25 +128,6 @@ class _LoginPageState extends State<LoginPage> {
                             },
                           ),
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text.rich(TextSpan(
-                          text: "Login as Organization?  ",
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 14),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: "Organization login",
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    decoration: TextDecoration.underline),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    nextScreen(context, const OrgLoginPage());
-                                  }),
-                          ],
-                        )),
                         const SizedBox(
                           height: 10,
                         ),
@@ -161,6 +144,25 @@ class _LoginPageState extends State<LoginPage> {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     nextScreen(context, const RegisterPage());
+                                  }),
+                          ],
+                        )),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text.rich(TextSpan(
+                          text: "Login as User?  ",
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 14),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: "Login",
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    decoration: TextDecoration.underline),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    nextScreen(context, const LoginPage());
                                   }),
                           ],
                         )),
@@ -261,13 +263,15 @@ class _LoginPageState extends State<LoginPage> {
           .then((value) async {
         if (value == true) {
           QuerySnapshot snapshot =
-              await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
-                  .gettingUserData(email);
+              await DatabaseService(oid: FirebaseAuth.instance.currentUser!.uid)
+                  .gettingOrgData(email);
           // saving the values to our shared preferences
+          await HelperFunctions.saveUserType(true);
           await HelperFunctions.saveUserLoggedInStatus(true);
           await HelperFunctions.saveUserEmailSF(email);
-          await HelperFunctions.saveUserNameSF(snapshot.docs[0]['fullName']);
-          nextScreenReplace(context, const HomePage());
+          await HelperFunctions.saveUserNameSF(snapshot.docs[0]['orgName']);
+          // print(snapshot.docs[0]['orgName']);
+          nextScreenReplace(context, const CoursePage());
         } else {
           showSnackBar(context, Colors.red, value);
           setState(() {
